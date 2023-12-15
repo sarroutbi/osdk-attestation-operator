@@ -1,1 +1,1 @@
-# attestation-operator-osdk-based
+# osdk-attestation-operator

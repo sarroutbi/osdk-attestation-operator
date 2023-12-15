@@ -1,0 +1,4 @@
+## Append samples you want in your CSV to this file as resources ##
+resources:
+- keylime_v1alpha1_attestation.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples
