@@ -21,7 +21,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    createdAt: "2023-12-15T15:49:58Z"
+    createdAt: "2023-12-15T16:30:34Z"
     operators.operatorframework.io/builder: operator-sdk-v1.32.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
   name: osdk-attestation-operator.v0.0.1
@@ -34,7 +34,6 @@ spec:
       displayName: Attestation
       kind: Attestation
       name: attestations.keylime.redhat.com
-      version: v1alpha1
       resources:
       - kind: Deployment
         version: v1
@@ -46,6 +45,22 @@ spec:
         version: v1
       - kind: Service
         version: v1
+      version: v1alpha1
+      specDescriptors:
+      - description: ListPods allows specifying if the list of pods needs to be retrieved
+        displayName: Set to True to list pods
+        path: listpods
+      statusDescriptors:
+      - description: PodList stores the list of pods retrieved
+        displayName: List of Pods
+        path: podlist
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Version contains the version of the attestation operator
+        displayName: Version
+        path: version
+        x-descriptors:
+        - urn:alm:descriptor:text
   description: Operator SDK based Attestation Operator
   displayName: osdk-attestation-operator
   icon:

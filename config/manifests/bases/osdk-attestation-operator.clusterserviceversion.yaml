@@ -14,6 +14,21 @@ spec:
       displayName: Attestation
       kind: Attestation
       name: attestations.keylime.redhat.com
+      specDescriptors:
+      - description: ListPods allows specifying if the list of pods needs to be retrieved
+        displayName: Set to True to list pods
+        path: listpods
+      statusDescriptors:
+      - description: PodList stores the list of pods retrieved
+        displayName: List of Pods
+        path: podlist
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Version contains the version of the attestation operator
+        displayName: Version
+        path: version
+        x-descriptors:
+        - urn:alm:descriptor:text
       version: v1alpha1
   description: Operator SDK based Attestation Operator
   displayName: osdk-attestation-operator
