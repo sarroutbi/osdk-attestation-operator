@@ -99,18 +99,22 @@ func GetRESTClient() (*rest.RESTClient, error) {
 func PodList(namespace string, stdin io.Reader) (string, string, error) {
 	config, err := GetClusterClientConfig()
 	if err != nil {
+		GetLogInstance().Info("Unable to get ClusterClientConfig")
 		return "", "", err
 	}
 	if config == nil {
+		GetLogInstance().Info("Unable to get config")
 		err = fmt.Errorf("nil config")
 		return "", "", err
 	}
 
 	clientset, err := GetClientsetFromClusterConfig(config)
 	if err != nil {
+		GetLogInstance().Info("Unable to get ClientSetFromClusterConfig")
 		return "", "", err
 	}
 	if clientset == nil {
+		GetLogInstance().Info("Clientset is null")
 		err = fmt.Errorf("nil clientset")
 		return "", "", err
 	}
@@ -120,12 +124,14 @@ func PodList(namespace string, stdin io.Reader) (string, string, error) {
 		Namespace(namespace)
 	scheme := runtime.NewScheme()
 	if err := core_v1.AddToScheme(scheme); err != nil {
+		GetLogInstance().Info("Unable to add scheme", "Scheme", scheme)
 		return "", "", fmt.Errorf("error adding to scheme: %v", err)
 	}
 
-	parameterCodec := runtime.NewParameterCodec(scheme)
-	req.VersionedParams(&core_v1.PodList{}, parameterCodec)
+	//parameterCodec := runtime.NewParameterCodec(scheme)
+	//req.VersionedParams(&core_v1.PodList{}, parameterCodec)
 
+	GetLogInstance().Info("Dumping request", "URL", req.URL())
 	exec, spdyerr := remotecommand.NewSPDYExecutor(config, "GET", req.URL())
 	if spdyerr != nil {
 		return "", "", fmt.Errorf("error while creating Executor: %v", err)
