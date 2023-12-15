@@ -47,10 +47,22 @@ type AttestationReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
 func (r *AttestationReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	SetLogInstance(log.FromContext(ctx))
 
 	// TODO(user): your logic here
+	r.CheckSpec(ctx)
 
+	return ctrl.Result{}, nil
+}
+
+func (r *AttestationReconciler) CheckSpec(ctx context.Context) (ctrl.Result, error) {
+	a := &keylimev1alpha1.Attestation{}
+	GetLogInstance().Info("Checking Pod List", "Spec", a.Spec)
+	if a.Spec.ListPods {
+		// TODO: Set namespace in CRD
+		l, o, e := PodList("keylime", nil)
+		GetLogInstance().Info("Logging Pod List", "Pod List", l, "Command output", o, "Error", e)
+	}
 	return ctrl.Result{}, nil
 }
 
