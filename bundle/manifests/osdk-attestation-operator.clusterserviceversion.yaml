@@ -21,7 +21,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    createdAt: "2023-12-15T15:16:45Z"
+    createdAt: "2023-12-15T15:49:58Z"
     operators.operatorframework.io/builder: operator-sdk-v1.32.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
   name: osdk-attestation-operator.v0.0.1
@@ -35,6 +35,17 @@ spec:
       kind: Attestation
       name: attestations.keylime.redhat.com
       version: v1alpha1
+      resources:
+      - kind: Deployment
+        version: v1
+      - kind: ReplicaSet
+        version: v1
+      - kind: Pod
+        version: v1
+      - kind: Secret
+        version: v1
+      - kind: Service
+        version: v1
   description: Operator SDK based Attestation Operator
   displayName: osdk-attestation-operator
   icon:
