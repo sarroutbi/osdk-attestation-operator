@@ -25,19 +25,22 @@ import (
 
 // AttestationSpec defines the desired state of Attestation
 type AttestationSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of Attestation. Edit attestation_types.go to remove/update
+	// ListPods allows specifying if the list of pods needs to be retrieved
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Set to True to list pods"
+	// +optional
 	ListPods bool `json:"listpods,omitempty"`
 }
 
 // AttestationStatus defines the observed state of Attestation
 type AttestationStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// PodList stores the list of pods retrieved
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="List of Pods"
+	// +optional
 	PodList []string `json:"podlist,omitempty"`
-	Version string   `json:"version,omitempty"`
+	// Version contains the version of the attestation operator
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Version"
+	// +optional
+	Version string `json:"version,omitempty"`
 }
 
 //+kubebuilder:object:root=true
