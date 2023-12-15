@@ -29,13 +29,14 @@ type AttestationSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Attestation. Edit attestation_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	ListPods bool `json:"listpods,omitempty"`
 }
 
 // AttestationStatus defines the observed state of Attestation
 type AttestationStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	PodList []string `json:"podlist,omitempty"`
 }
 
 //+kubebuilder:object:root=true
