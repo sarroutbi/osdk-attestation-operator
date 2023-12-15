@@ -21,7 +21,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    createdAt: "2023-12-15T16:38:23Z"
+    createdAt: "2023-12-15T17:35:27Z"
     operators.operatorframework.io/builder: operator-sdk-v1.32.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
   name: osdk-attestation-operator.v0.0.1
@@ -108,6 +108,16 @@ spec:
           - subjectaccessreviews
           verbs:
           - create
+        - apiGroups:
+          - ""
+          resources:
+          - pods/status
+          verbs:
+          - create
+          - get
+          - list
+          - update
+          - watch
         serviceAccountName: osdk-attestation-operator-controller-manager
       deployments:
       - label:
