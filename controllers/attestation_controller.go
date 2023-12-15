@@ -19,6 +19,8 @@ package controllers
 import (
 	"context"
 
+	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -48,22 +50,42 @@ type AttestationReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
 func (r *AttestationReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	SetLogInstance(log.FromContext(ctx))
-
-	// TODO(user): your logic here
-	r.CheckSpec(ctx)
-
+	a := &keylimev1alpha1.Attestation{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: req.NamespacedName.Namespace,
+			Name:      req.NamespacedName.Name,
+		},
+	}
+	err := r.Get(ctx, req.NamespacedName, a)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			GetLogInstance().Info("Attestation resource not found")
+		}
+	}
+	r.CheckSpec(a)
+	r.VersionUpdate(a)
+	err = r.Client.Status().Update(context.Background(), a)
+	if err != nil {
+		GetLogInstance().Error(err, "Unable to update Attestation status")
+		return ctrl.Result{}, err
+	}
 	return ctrl.Result{}, nil
 }
 
-func (r *AttestationReconciler) CheckSpec(ctx context.Context) (ctrl.Result, error) {
-	a := &keylimev1alpha1.Attestation{}
-	GetLogInstance().Info("Checking Pod List", "Spec", a.Spec)
-	if a.Spec.ListPods {
+func (r *AttestationReconciler) VersionUpdate(attestation *keylimev1alpha1.Attestation) {
+	v := new(VersionUpdater)
+	v.NewVersionUpdater(attestation)
+	v.UpdateVersion()
+}
+
+func (r *AttestationReconciler) CheckSpec(attestation *keylimev1alpha1.Attestation) error {
+	GetLogInstance().Info("Checking Pod List", "Spec", attestation.Spec)
+	if attestation.Spec.ListPods {
 		// TODO: Set namespace in CRD
 		l, o, e := PodList("keylime", nil)
 		GetLogInstance().Info("Logging Pod List", "Pod List", l, "Command output", o, "Error", e)
 	}
-	return ctrl.Result{}, nil
+	return nil
 }
 
 // SetupWithManager sets up the controller with the Manager.

@@ -50,6 +50,8 @@ spec:
                 items:
                   type: string
                 type: array
+              version:
+                type: string
             type: object
         type: object
     served: true
