@@ -38,6 +38,8 @@ type AttestationReconciler struct {
 //+kubebuilder:rbac:groups=keylime.redhat.com,resources=attestations,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=keylime.redhat.com,resources=attestations/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=keylime.redhat.com,resources=attestations/finalizers,verbs=update
+//+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch;create;update
+//+kubebuilder:rbac:groups=core,resources=pods/status,verbs=get;list;watch;create;update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -82,7 +84,7 @@ func (r *AttestationReconciler) CheckSpec(attestation *keylimev1alpha1.Attestati
 	GetLogInstance().Info("Checking Pod List", "Spec", attestation.Spec)
 	if attestation.Spec.ListPods {
 		// TODO: Set namespace in CRD
-		l, o, e := PodList("keylime", nil)
+		l, o, e := PodList("default", nil)
 		GetLogInstance().Info("Logging Pod List", "Pod List", l, "Command output", o, "Error", e)
 	}
 	return nil
