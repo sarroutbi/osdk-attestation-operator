@@ -35,10 +35,19 @@ spec:
           spec:
             description: AttestationSpec defines the desired state of Attestation
             properties:
-              listpods:
-                description: ListPods allows specifying if the list of pods needs
-                  to be retrieved
-                type: boolean
+              podretrieval:
+                description: PodRetrievalInfo allows specifying information required
+                  to retrieve a list of pods
+                properties:
+                  enabled:
+                    description: Enabled allows specifying if want to retrieve the
+                      list of pods
+                    type: boolean
+                  namespace:
+                    description: Namespace allows specifying namespace where to retrieve
+                      the list of pods
+                    type: string
+                type: object
             type: object
           status:
             description: AttestationStatus defines the observed state of Attestation

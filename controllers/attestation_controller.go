@@ -82,12 +82,13 @@ func (r *AttestationReconciler) VersionUpdate(attestation *keylimev1alpha1.Attes
 
 func (r *AttestationReconciler) CheckSpec(attestation *keylimev1alpha1.Attestation, ctx context.Context) error {
 	GetLogInstance().Info("Checking Pod List", "Spec", attestation.Spec)
-	if attestation.Spec.ListPods {
+	if attestation.Spec.PodRetrievalInfo != nil && attestation.Spec.PodRetrievalInfo.Enabled {
 		// TODO: Set namespace in CRD
-		lpods, e := PodList("default", ctx)
+		lpods, e := PodList(attestation.Spec.PodRetrievalInfo.Namespace, ctx)
 		GetLogInstance().Info("Logging Pod List", "Pod List", lpods, "Error", e)
 		attestation.Status.PodList = lpods
 	} else {
+		GetLogInstance().Info("Pod List not retrieved")
 		attestation.Status.PodList = nil
 	}
 	return nil

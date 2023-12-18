@@ -20,15 +20,24 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+// PodRetrieval struct defines different information required for pod retrieval
+type PodRetrieval struct {
+	// Enabled allows specifying if want to retrieve the list of pods
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Set to True to list pods"
+	// +optional
+	Enabled bool `json:"enabled,omitempty"`
+	// Namespace allows specifying namespace where to retrieve the list of pods
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Indicate namespace for pod retrieval"
+	// +optional
+	Namespace string `json:"namespace,omitempty"`
+}
 
 // AttestationSpec defines the desired state of Attestation
 type AttestationSpec struct {
-	// ListPods allows specifying if the list of pods needs to be retrieved
-	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Set to True to list pods"
+	// PodRetrievalInfo allows specifying information required to retrieve a list of pods
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Information for pod list retrieval"
 	// +optional
-	ListPods bool `json:"listpods,omitempty"`
+	PodRetrievalInfo *PodRetrieval `json:"podretrieval,omitempty"`
 }
 
 // AttestationStatus defines the observed state of Attestation
