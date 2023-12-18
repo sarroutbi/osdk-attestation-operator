@@ -32,6 +32,16 @@ spec:
         path: podlist
         x-descriptors:
         - urn:alm:descriptor:text
+      - description: PodName represents the name of the pod
+        displayName: Pod Name
+        path: podlist[0].name
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Status contains the status of the pod
+        displayName: Pod Status
+        path: podlist[0].status
+        x-descriptors:
+        - urn:alm:descriptor:text
       - description: Version contains the version of the attestation operator
         displayName: Version
         path: version

@@ -11,4 +11,4 @@ metadata:
 spec:
   podretrieval:
     enabled: True
-    namespace: "default"
+    namespace: "keylime"

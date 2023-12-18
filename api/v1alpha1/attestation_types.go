@@ -40,12 +40,24 @@ type AttestationSpec struct {
 	PodRetrievalInfo *PodRetrieval `json:"podretrieval,omitempty"`
 }
 
+// PodInformation contains different information related to pods retrieved
+type PodInformation struct {
+	// PodName represents the name of the pod
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Pod Name"
+	// +optional
+	PodName string `json:"name,omitempty"`
+	// Status contains the status of the pod
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Pod Status"
+	// +optional
+	PodStatus string `json:"status,omitempty"`
+}
+
 // AttestationStatus defines the observed state of Attestation
 type AttestationStatus struct {
 	// PodList stores the list of pods retrieved
 	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="List of Pods"
 	// +optional
-	PodList []string `json:"podlist,omitempty"`
+	PodList []PodInformation `json:"podlist,omitempty"`
 	// Version contains the version of the attestation operator
 	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Version"
 	// +optional

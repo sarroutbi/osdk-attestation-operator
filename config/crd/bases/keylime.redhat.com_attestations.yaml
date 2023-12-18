@@ -55,7 +55,16 @@ spec:
               podlist:
                 description: PodList stores the list of pods retrieved
                 items:
-                  type: string
+                  description: PodInformation contains different information related
+                    to pods retrieved
+                  properties:
+                    name:
+                      description: PodName represents the name of the pod
+                      type: string
+                    status:
+                      description: Status contains the status of the pod
+                      type: string
+                  type: object
                 type: array
               version:
                 description: Version contains the version of the attestation operator
