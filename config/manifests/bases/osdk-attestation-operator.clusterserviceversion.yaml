@@ -15,9 +15,17 @@ spec:
       kind: Attestation
       name: attestations.keylime.redhat.com
       specDescriptors:
-      - description: ListPods allows specifying if the list of pods needs to be retrieved
+      - description: PodRetrievalInfo allows specifying information required to retrieve
+          a list of pods
+        displayName: Information for pod list retrieval
+        path: podretrieval
+      - description: Enabled allows specifying if want to retrieve the list of pods
         displayName: Set to True to list pods
-        path: listpods
+        path: podretrieval.enabled
+      - description: Namespace allows specifying namespace where to retrieve the list
+          of pods
+        displayName: Indicate namespace for pod retrieval
+        path: podretrieval.namespace
       statusDescriptors:
       - description: PodList stores the list of pods retrieved
         displayName: List of Pods

@@ -9,4 +9,6 @@ metadata:
     app.kubernetes.io/created-by: osdk-attestation-operator
   name: attestation-example
 spec:
-  listpods: True
+  podretrieval:
+    enabled: enabled
+    namespace: "default"
