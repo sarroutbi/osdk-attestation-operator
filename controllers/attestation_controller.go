@@ -64,7 +64,7 @@ func (r *AttestationReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 			GetLogInstance().Info("Attestation resource not found")
 		}
 	}
-	r.CheckSpec(a)
+	r.CheckSpec(a, ctx)
 	r.VersionUpdate(a)
 	err = r.Client.Status().Update(context.Background(), a)
 	if err != nil {
@@ -80,12 +80,13 @@ func (r *AttestationReconciler) VersionUpdate(attestation *keylimev1alpha1.Attes
 	v.UpdateVersion()
 }
 
-func (r *AttestationReconciler) CheckSpec(attestation *keylimev1alpha1.Attestation) error {
+func (r *AttestationReconciler) CheckSpec(attestation *keylimev1alpha1.Attestation, ctx context.Context) error {
 	GetLogInstance().Info("Checking Pod List", "Spec", attestation.Spec)
 	if attestation.Spec.ListPods {
 		// TODO: Set namespace in CRD
-		l, o, e := PodList("default", nil)
-		GetLogInstance().Info("Logging Pod List", "Pod List", l, "Command output", o, "Error", e)
+		l, e := PodList("default", ctx)
+		GetLogInstance().Info("Logging Pod List", "Pod List", l, "Error", e)
+		attestation.Status.PodList = l
 	}
 	return nil
 }
