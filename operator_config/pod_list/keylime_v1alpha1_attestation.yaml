@@ -10,5 +10,5 @@ metadata:
   name: attestation-example
 spec:
   podretrieval:
-    enabled: enabled
+    enabled: True
     namespace: "default"
