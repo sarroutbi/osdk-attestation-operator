@@ -20,7 +20,7 @@ import (
 	keylimev1alpha1 "github.com/sarroutbi/osdk-attestation-operator/api/v1alpha1"
 )
 
-var VERSION = "v0.0.1-202312181330"
+var VERSION = "v0.0.1-202312181800"
 
 type VersionUpdater struct {
 	AttestationInfo *keylimev1alpha1.Attestation

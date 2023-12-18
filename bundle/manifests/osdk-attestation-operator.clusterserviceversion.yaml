@@ -21,7 +21,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    createdAt: "2023-12-18T14:33:32Z"
+    createdAt: "2023-12-18T17:12:29Z"
     operators.operatorframework.io/builder: operator-sdk-v1.32.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
   name: osdk-attestation-operator.v0.0.1
@@ -61,6 +61,16 @@ spec:
       - description: PodList stores the list of pods retrieved
         displayName: List of Pods
         path: podlist
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: PodName represents the name of the pod
+        displayName: Pod Name
+        path: podlist[0].name
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Status contains the status of the pod
+        displayName: Pod Status
+        path: podlist[0].status
         x-descriptors:
         - urn:alm:descriptor:text
       - description: Version contains the version of the attestation operator

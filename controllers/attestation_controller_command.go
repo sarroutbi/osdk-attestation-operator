@@ -22,10 +22,12 @@ import (
 	"os"
 	"path/filepath"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+
+	keylimev1alpha1 "github.com/sarroutbi/osdk-attestation-operator/api/v1alpha1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // GetClusterClientConfig first tries to get a config object which uses the service account kubernetes gives to pods,
@@ -92,34 +94,36 @@ func GetRESTClient() (*rest.RESTClient, error) {
 //	string: Output of the command. (STDOUT)
 //	string: Errors. (STDERR)
 //	 error: If any error has occurred otherwise `nil`
-func PodList(namespace string, ctx context.Context) ([]string, error) {
+func PodList(namespace string, ctx context.Context) ([]keylimev1alpha1.PodInformation, error) {
 	config, err := GetClusterClientConfig()
 	if err != nil {
 		GetLogInstance().Info("Unable to get ClusterClientConfig")
-		return []string{}, err
+		return []keylimev1alpha1.PodInformation{}, err
 	}
 	if config == nil {
 		GetLogInstance().Info("Unable to get config")
 		err = fmt.Errorf("nil config")
-		return []string{}, err
+		return []keylimev1alpha1.PodInformation{}, err
 	}
 
 	clientset, err := GetClientsetFromClusterConfig(config)
 	if err != nil {
 		GetLogInstance().Info("Unable to get ClientSetFromClusterConfig")
-		return []string{}, err
+		return []keylimev1alpha1.PodInformation{}, err
 	}
 	if clientset == nil {
 		GetLogInstance().Info("Clientset is null")
 		err = fmt.Errorf("nil clientset")
-		return []string{}, err
+		return []keylimev1alpha1.PodInformation{}, err
 	}
 
 	pods, _ := clientset.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
-	lpods := make([]string, len(pods.Items))
+	lpods := make([]keylimev1alpha1.PodInformation, len(pods.Items))
 	for i, pod := range pods.Items {
-		GetLogInstance().Info("Execution information (Pod)", "i", i, "Pod", pod.GetName())
-		lpods[i] = pod.GetName()
+		GetLogInstance().Info("Execution information (Pod)", "i", i, "Pod", pod.GetName(),
+			"Pod Reason", pod.Status.Reason, "Pod Status", pod.Status)
+		lpods[i].PodName = pod.GetName()
+		lpods[i].PodStatus = string(pod.Status.Phase)
 	}
 	return lpods, nil
 }
