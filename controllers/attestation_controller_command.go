@@ -17,19 +17,15 @@ limitations under the License.
 package controllers
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 
-	core_v1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/runtime"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
-	"k8s.io/client-go/tools/remotecommand"
 )
 
 // GetClusterClientConfig first tries to get a config object which uses the service account kubernetes gives to pods,
@@ -89,64 +85,41 @@ func GetRESTClient() (*rest.RESTClient, error) {
 
 // PodList list the pods in a particular namespace
 // :param string namespace: namespace of the Pod
-// :param io.Reader stdin: Standard Input if necessary, otherwise `nil`
+// :param context
 //
 // :return:
 //
 //	string: Output of the command. (STDOUT)
 //	string: Errors. (STDERR)
 //	 error: If any error has occurred otherwise `nil`
-func PodList(namespace string, stdin io.Reader) (string, string, error) {
+func PodList(namespace string, ctx context.Context) ([]string, error) {
 	config, err := GetClusterClientConfig()
 	if err != nil {
 		GetLogInstance().Info("Unable to get ClusterClientConfig")
-		return "", "", err
+		return []string{}, err
 	}
 	if config == nil {
 		GetLogInstance().Info("Unable to get config")
 		err = fmt.Errorf("nil config")
-		return "", "", err
+		return []string{}, err
 	}
 
 	clientset, err := GetClientsetFromClusterConfig(config)
 	if err != nil {
 		GetLogInstance().Info("Unable to get ClientSetFromClusterConfig")
-		return "", "", err
+		return []string{}, err
 	}
 	if clientset == nil {
 		GetLogInstance().Info("Clientset is null")
 		err = fmt.Errorf("nil clientset")
-		return "", "", err
+		return []string{}, err
 	}
 
-	req := clientset.CoreV1().RESTClient().Get().
-		Resource("pods").
-		Namespace(namespace)
-	scheme := runtime.NewScheme()
-	if err := core_v1.AddToScheme(scheme); err != nil {
-		GetLogInstance().Info("Unable to add scheme", "Scheme", scheme)
-		return "", "", fmt.Errorf("error adding to scheme: %v", err)
+	pods, _ := clientset.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
+	lpods := make([]string, len(pods.Items))
+	for i, pod := range pods.Items {
+		GetLogInstance().Info("Execution information (Pod)", "i", i, "Pod", pod.GetName())
+		lpods[i] = pod.GetName()
 	}
-
-	//parameterCodec := runtime.NewParameterCodec(scheme)
-	//req.VersionedParams(&core_v1.PodList{}, parameterCodec)
-
-	GetLogInstance().Info("Dumping request", "URL", req.URL())
-	exec, spdyerr := remotecommand.NewSPDYExecutor(config, "GET", req.URL())
-	if spdyerr != nil {
-		return "", "", fmt.Errorf("error while creating Executor: %v", err)
-	}
-
-	var stdout, stderr bytes.Buffer
-	err = exec.StreamWithContext(context.Background(), remotecommand.StreamOptions{
-		Stdin:  stdin,
-		Stdout: &stdout,
-		Stderr: &stderr,
-		Tty:    false,
-	})
-	if err != nil {
-		return "", "", fmt.Errorf("error in Stream: %v", err)
-	}
-
-	return stdout.String(), stderr.String(), nil
+	return lpods, nil
 }
