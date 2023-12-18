@@ -20,13 +20,13 @@ import (
 	"context"
 
 	"k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	keylimev1alpha1 "github.com/sarroutbi/osdk-attestation-operator/api/v1alpha1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	ctrl "sigs.k8s.io/controller-runtime"
 )
 
 // AttestationReconciler reconciles a Attestation object
@@ -84,9 +84,11 @@ func (r *AttestationReconciler) CheckSpec(attestation *keylimev1alpha1.Attestati
 	GetLogInstance().Info("Checking Pod List", "Spec", attestation.Spec)
 	if attestation.Spec.ListPods {
 		// TODO: Set namespace in CRD
-		l, e := PodList("default", ctx)
-		GetLogInstance().Info("Logging Pod List", "Pod List", l, "Error", e)
-		attestation.Status.PodList = l
+		lpods, e := PodList("default", ctx)
+		GetLogInstance().Info("Logging Pod List", "Pod List", lpods, "Error", e)
+		attestation.Status.PodList = lpods
+	} else {
+		attestation.Status.PodList = nil
 	}
 	return nil
 }
